@@ -1,0 +1,3 @@
+# 모든 텍스트 파일을 LF로 저장 (Mac/Windows 공통). 줄 번호 링크가 OS마다 어긋나지 않게 한다.
+* text=auto eol=lf
+*.xlsx binary

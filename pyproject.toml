@@ -1,0 +1,26 @@
+[project]
+name = "sellerlens"
+version = "0.1.0"
+description = "셀러 리뷰·고객 문의 분석 도우미 (KANT 강의 실습 토이 프로젝트)"
+readme = "README.md"
+authors = [
+    { name = "ho-yu", email = "ttyui0402@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.11.1",
+    "numpy>=2.5.2",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.5",
+    "scikit-learn>=1.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.0.0",
+    "ruff>=0.16.9",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"

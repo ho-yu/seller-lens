@@ -1,0 +1,8 @@
+{
+  "github_repo": "ho-yu/seller-lens",
+  "default_branch": "main",
+  "notion": {
+    "project_page": "https://app.notion.com/p/3ed682609ddd813a952cc847809316e7",
+    "devlog_data_source": "collection://6c57c7e1-688e-4551-aaf7-5ba0755f801b"
+  }
+}
