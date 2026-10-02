@@ -1,9 +1,11 @@
 from pathlib import Path
+
 import pandas as pd
 
-INPUT_PATH = Path('data/raw/reviews.xlsx')
+# 00_merge_reviews.py 결과 (상품 3개 병합, 개인정보 제거)
+INPUT_PATH = Path('data/interim/reviews_merged.csv')
 
-df = pd.read_excel(INPUT_PATH)
+df = pd.read_csv(INPUT_PATH)
 
 # 필요한 컬럼만 선택
 df = df[

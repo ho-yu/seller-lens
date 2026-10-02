@@ -24,3 +24,8 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
+[tool.uv]
+# scipy 1.18.x의 컴파일된 DLL(_sobol 등)이 Windows 스마트 앱 컨트롤에 차단된다 (평판 미확보).
+# scikit-learn을 통해 들어오는 간접 의존성이라 버전만 제한한다. 차단이 풀리면 지운다.
+constraint-dependencies = ["scipy<1.18"]

@@ -1,11 +1,15 @@
 {
-  // 인터프리터: .venv 안의 실행 파일 경로가 Windows(Scripts/python.exe)와 Mac(bin/python)에서 달라서
-  // 폴더만 지정하고 Python 확장의 자동 탐지에 맡긴다. `uv sync` 후 VS Code를 다시 열면 잡힌다.
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
+  // 인터프리터: 경로를 지정하지 않는다. Python 확장이 작업 폴더의 .venv를 자동으로 찾는다
+  // (Windows: .venv/Scripts/python.exe, Mac: .venv/bin/python).
+  // python.defaultInterpreterPath에 .venv "폴더"를 넣으면 Pylance가 패키지를 못 찾으니 넣지 않는다.
   "python.terminal.activateEnvironment": true,
 
   "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    // 저장할 때 Ruff로 import 정리 (표준 라이브러리 / 외부 패키지 묶음 나누기, 정렬)
+    "editor.codeActionsOnSave": {
+      "source.organizeImports.ruff": "explicit"
+    }
   },
 
   "files.eol": "\n",
