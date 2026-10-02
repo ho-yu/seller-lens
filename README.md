@@ -11,7 +11,7 @@ KANT 강의 4과목을 순서대로 학습하면서, 배운 것을 바로 이 �
 ![LLM](https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white)
 ![Status](https://img.shields.io/badge/status-Day00%20기획-lightgrey)
 
-[로드맵](docs/ROADMAP.md) · [커리큘럼](docs/CURRICULUM.md) · [기능 진행 현황](docs/FEATURES.md) · [학습 일지](docs/days/)
+[로드맵](docs/ROADMAP.md) · [커리큘럼](docs/CURRICULUM.md) · [기능 진행 현황](docs/FEATURES.md) · [학습 일지](docs/days/) · [코딩 컨벤션](docs/CONVENTIONS.md)
 
 </div>
 
@@ -82,6 +82,7 @@ sellerlens/
 │  ├─ ROADMAP.md         기능 목록 · 추후 진행
 │  ├─ CURRICULUM.md      과목·장별 학습/개발 계획
 │  ├─ FEATURES.md        기능별 진행 현황
+│  ├─ CONVENTIONS.md     코딩 컨벤션 (파일 구성, 이름, 함수, 경로, 검증)
 │  └─ days/              Day별 학습 일지 (dayNN.md, _template.md)
 └─ .claude/skills/day-wrap/   하루 기록 → 커밋·태그·푸시 → 노션 반영 절차
 ```
