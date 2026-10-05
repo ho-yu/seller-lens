@@ -82,7 +82,7 @@
 
 | 명령 | 결과 |
 |---|---|
-| `uv run python labs/day02/dl_ch01_softmax.py` | ✅ 키워드 1~5 모두 `⏸ 건너뜀` 없이 실행, assert 전부 통과, TASKS.md 정답 출력과 같음 |
+| `uv run python labs/day02/dl_ch01_softmax.py` | ✅ 키워드 1~5 모두 `⏸ 건너뜀` 없이 실행, assert 전부 통과, `TASKS.md` 정답 출력과 같음 |
 | `uv run ruff check labs/day02` | ✅ All checks passed |
 | `uv run ruff format labs/day02` | ✅ 형식 정리 (`stable_log_softmax`의 쉼표 뒤 공백 1곳) |
 
