@@ -30,7 +30,7 @@
     함수마다 docstring(무엇을 위한 함수인가, Args, Returns)을 읽고, "작성 순서" 주석의
     줄 모양을 그대로 쓰되 ___ 칸만 채운다.
     다 쓰면 TODO 주석과 raise NotImplementedError 줄을 지우고 실행한다. 작성 전인 키워드는 건너뛴다.
-    실행 결과와 맞춰 볼 정답 출력, 설명해 보기: labs/day03/TASKS.md
+    실행 전 예상, 정답 출력(접힘), 설명해 보기, 변형 문제: labs/day03/TASKS.md
 실행 (프로젝트 루트에서): uv run python labs/day03/dl_ch01_loss.py
 """
 
