@@ -110,7 +110,8 @@ def is_valid_probs(probs: np.ndarray, axis: int = -1) -> bool:
     is_at_most_one = np.all(probs <= 1)
     sums_to_one = np.allclose(np.sum(probs, axis=axis), 1.0)
 
-    return is_non_negative and is_at_most_one and sums_to_one
+    # np.all은 numpy.bool을 돌려줘서, 선언한 반환 타입(파이썬 bool)에 맞게 bool()로 감싼다.
+    return bool(is_non_negative and is_at_most_one and sums_to_one)
 
 
 # --- 키워드 2 ---------------------------------------------------------------
