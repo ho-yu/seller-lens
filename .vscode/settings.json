@@ -12,6 +12,13 @@
     }
   },
 
+  // CSV는 텍스트 에디터 + Rainbow CSV(열마다 색), 엑셀은 Excel Viewer(보기 전용 표)로 연다
+  "files.associations": { "*.csv": "csv" },
+  "workbench.editorAssociations": {
+    "*.csv": "default",
+    "*.xlsx": "gc-excelviewer-excel-editor"
+  },
+
   "files.eol": "\n",
   "files.encoding": "utf8",
   "files.insertFinalNewline": true,

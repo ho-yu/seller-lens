@@ -9,7 +9,7 @@ KANT 강의 4과목을 순서대로 학습하면서, 배운 것을 바로 이 �
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![uv](https://img.shields.io/badge/uv-package%20manager-DE5FE9?logo=uv&logoColor=white)
 ![LLM](https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white)
-![Status](https://img.shields.io/badge/status-Day03%20진행%20중-lightgrey)
+![Status](https://img.shields.io/badge/status-Day03%20완료-lightgrey)
 
 [로드맵](docs/ROADMAP.md) · [커리큘럼](docs/CURRICULUM.md) · [기능 진행 현황](docs/FEATURES.md) · [학습 일지](docs/days/) · [코딩 컨벤션](docs/CONVENTIONS.md)
 
