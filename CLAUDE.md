@@ -38,6 +38,7 @@
 - 강이 끝나면 "마무리"로 일지(`docs/days/`), 커밋·태그·푸시, 노션 반영을 한다 (`.claude/skills/day-wrap/`). 기록은 Claude가 한다.
 - 푸시는 사용자가 "마무리"나 "푸시"라고 했을 때만 한다.
 - 이어서 할 때는 직전 일지와 `git status`로 어디까지 했는지 확인한다.
+- Codex용 복사본을 원본과 같게 유지한다: `AGENTS.md` = `CLAUDE.md`, `.agents/skills/day-wrap/` = `.claude/skills/day-wrap/`. 원본을 고치면 같은 커밋에서 복사본도 덮어쓴다.
 
 ## 환경
 
