@@ -8,9 +8,9 @@
 
 | ID | 기능 | 상태 | 계획된 단계 | 관련 Day |
 |---|---|---|---|---|
-| 공통 | 환경·구조·API 서버·운영 품질 | 진행 중 | Day00 환경 → 2과목 5~8장 API 서버 → LangChain 8~9장 관측·오류 대응 | Day00, Day01, Day02, Day03, Day04, Day05, Day06 |
+| 공통 | 환경·구조·API 서버·운영 품질 | 진행 중 | Day00 환경 → 2과목 5~8장 API 서버 → LangChain 8~9장 관측·오류 대응 | Day00, Day01, Day02, Day03, Day04, Day05, Day06, Day07 |
 | F1 | 리뷰 통합·정제 | 진행 중 | Step 0 기본 → 2과목 4장 완성 → RAG 2장 metadata 확정 | Day01, Day06 |
-| F2 | 리뷰 자동 태깅 | 예정 | 1과목 5~7장 → LangChain 3·5장 | |
+| F2 | 리뷰 자동 태깅 | 진행 중 | 1과목 5~7장 → LangChain 3·5장 | Day07 |
 | F3 | 대응 우선순위 큐 | 예정 | 1과목 7장 | |
 | F4 | 리뷰 답글 초안 | 진행 중 | 1과목 5장 → LangChain 2~3장 | Day06 |
 | F5 | 상품 리뷰 리포트 | 예정 | 1과목 8장 → LangChain 4장 | |
@@ -33,12 +33,14 @@
 - Day04: Codex용 작업 규칙·마무리 절차 복사본(`AGENTS.md`, `.agents/skills/day-wrap/`)과 원본 동기화 규칙(`CLAUDE.md`), 기본 LLM으로 `qwen3:4b-instruct-2507-q4_K_M` 선택
 - Day05: `openai` 패키지 추가(`pyproject.toml`, `uv.lock`), Ollama를 OpenAI SDK로 부르는 방법 실습(`labs/day05/`)
 - Day06: 엑셀(`*.xlsx`, `*.xls`)과 `.idea/`를 `.gitignore`에 추가하고 원본 엑셀 3개의 git 추적 해제(`.gitignore`)
+- Day07: 직접 쓴 LLM 호출·평가 함수를 `src/`로 복사(`src/llm.py`, `src/evaluation.py`)
 
 ### F1 리뷰 통합·정제
 - Day01: Step 0 기본 버전. 엑셀 3개 병합·`product_id`·개인정보 삭제(`src/00_merge_reviews.py` → `data/interim/reviews_merged.csv`), 제목+본문 `text`·학습용 486건(`src/02_prepare_data.py` → `data/processed/reviews.csv`)
 - Day06: 컬럼 이름이 다른 새 엑셀 2개를 `rename_columns`로 맞춰 병합에 추가(`src/00_merge_reviews.py`), `reviews.csv`를 2,076건(부정 658건)으로 재생성
 
 ### F2 리뷰 자동 태깅
+- Day07: 평점 라벨(2점 대 4점 각 30건)로 감성 분류의 정확도·부정 재현율·F1 측정, zero-shot 0.85 대 few-shot(예시 4개) 0.88(`labs/day07/dl_ch06_fewshot_eval.py`, `src/llm.py`, `src/evaluation.py`)
 
 ### F3 대응 우선순위 큐
 
