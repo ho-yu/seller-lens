@@ -51,6 +51,19 @@ pii_columns = [
 
 
 # =====================================
+# 3-1. 컬럼 이름 통일
+# =====================================
+
+# 새로 받은 엑셀(product_04~)은 컬럼 이름이 달라서 기존 이름으로 맞춘다
+rename_columns = {
+    "별점": "평점",
+    "리뷰 제목": "리뷰제목",
+    "리뷰 본문": "리뷰내용",
+    "상품명(옵션)": "상품옵션명"
+}
+
+
+# =====================================
 # 4. 파일별로 읽고 product_id 붙이기
 # =====================================
 
@@ -58,7 +71,9 @@ frames = []
 
 for file in excel_files:
 
-    df = pd.read_excel(file)
+    df = pd.read_excel(file).rename(
+        columns=rename_columns
+    )
 
     missing = [
         col for col in required_columns

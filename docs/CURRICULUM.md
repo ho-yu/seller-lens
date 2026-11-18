@@ -22,7 +22,7 @@
 
 ## 사전 준비 ✅
 
-엑셀 3개 병합, 개인정보 제거, 학습용 리뷰 486건 (`data/processed/reviews.csv`, Day01).
+엑셀 5개 병합, 개인정보 제거, 학습용 리뷰 2,076건 (`data/processed/reviews.csv`, Day01·Day06).
 
 ## 1과목. 딥러닝 실전 & 프롬프트
 
