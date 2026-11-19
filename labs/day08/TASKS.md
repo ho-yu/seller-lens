@@ -1,142 +1,121 @@
-# Day08 · 1과목 7장 — Structured Output과 Pydantic 검증 (A 등급)
+# Day08 · 1과목 8장 — Tool Calling (A 등급)
 
-> 기능: F2 리뷰 자동 태깅 · 강의안: 노션 Kant > 딥러닝 실전 & 프롬프트 엔지니어링 > 7장 1~3강 ("1강 §5"는 1강의 5번 절)
-> 순서: ⓪ 퀴즈 5분 → ① 훑기 25분 → ② 암기 15분 → ③ 구현 50분 → ④ 리뷰 20분 → "마무리"
-> 하는 법: 이 파일을 위에서 아래로 따라간다. 강의안은 ①에서 처음 열고, 적힌 곳만 읽는다.
+> 기능: F5 리포트 v0 · 강의안: 노션 Kant > 딥러닝 실전 & 프롬프트 엔지니어링 > 8장 1~3강 ("2강 §4"는 2강의 4번 절)
+> 끝의 기준은 하나다. 아래 질문에 내 말로 답할 수 있고 ✍️ 두 곳을 쓸 수 있으면 끝이다. 시간표는 없다.
+> 모르는 것이 나오면 강의안을 뒤지지 말고 Claude에게 한 줄로 묻는다.
 
-**한 문장 핵심:** LLM 답은 문법 → 구조 → 업무 규칙 순서로 검사하고, 구조는 Pydantic 클래스 하나로 정해 모델에도 넘기고 받은 답도 검사한다.
+## 오늘의 질문
 
-## ⓪ 시작 퀴즈 (5분)
+**모델이 "도구를 호출한다"고 할 때 함수를 실제로 실행하는 것은 누구이고, 실행하기 전에 내 코드는 무엇을 확인해야 하는가?**
 
-지난 강의 핵심 코드다. 빈칸을 채우고 `docs/CHEATSHEET.md`로 확인한다.
+지금은 답을 몰라도 된다. 코드를 돌려 본 뒤에 답한다.
 
-1. `response = client.chat.completions.create(model=MODEL, messages=messages, temperature=0)`
-2. 답 문자열 꺼내기: `response.choices[0].message.content`
-3. 재현율 = `tp / (tp + fn)`
+## 🎯 핵심 개념 (한 번만 읽고 넘어간다)
 
-## ① 훑기 (25분)
+1. **Tool Calling** (1강 §1~2): 모델은 "이 도구를 이 인자로 부르자"는 제안(도구 이름 + 인자 JSON 문자열)만 만들고, 함수는 내 코드가 실행한다.
+2. **실행 전 확인** (2강 §2~4): 모델이 만든 인자는 믿을 수 없는 외부 입력이다. 등록한 도구인지 보고(allowlist), 인자를 Pydantic으로 검증한 뒤에만 실행한다.
+3. **결과 돌려주기** (3강 §1~4): 실행 결과를 호출 id와 함께 `role="tool"` 메시지로 붙여 다시 물으면 모델이 최종 답을 쓴다. 실패도 `ok: false`로 그대로 알린다.
 
-각 강의 §13 요약과 아래 📌만 읽는다. **나머지는 소제목만 보고 넘긴다.**
+## 코드 먼저
 
-**🎯 핵심 개념**
+> 코드: `labs/day08/dl_ch08_tool_calling.py` · 실행: `uv run python labs/day08/dl_ch08_tool_calling.py` (② 부분은 Ollama가 켜져 있어야 한다)
 
-1. **출력 계약 (JSON Schema)** (1강 §1~3): 모델 답이 지킬 모양(필드·타입·허용값)을 정한 규칙.
-2. **Pydantic BaseModel** (2강 §1~3): 출력 계약을 파이썬 클래스로 쓰고, 그 클래스 하나로 스키마 생성과 검증을 함께 한다.
-3. **검증 단계** (1강 §2, 3강 §3): 문법 → 구조 → 업무 규칙 순서로 보고, 형식이 통과해도 내용이 맞다는 뜻은 아니다.
-4. **strict** (2강 §5): 자동 형 변환("3" → 3)을 막아 LLM 출력의 타입 오류를 드러낸다.
-5. **출력 복구** (3강 §1~2): 실패를 지어낸 값으로 메우지 않고, 다시 묻기·사람 검토·중단 중 하나로 보낸다.
-
-**📌 읽을 곳**
-
-- 1강 §8 문제 2: 실패 이유 3개를 답 보기 전에 찾아본다.
-- 2강 §5: `"3"`이 `3`으로 바뀌는 예와 `strict=True`.
-- 2강 §7 코드: `DocumentAnalysis`가 우리 `ReviewTag`의 본보기다.
-- 3강 §2 오류 정책 표, §8 문제 2: `priority=5`를 3으로 잘라 저장하지 않는 이유.
-
-## ② 암기 (15분)
-
-한 번 따라 치고, 가리고 다시 쓰고, 틀린 줄만 반복한다.
-
-```python
-from typing import Literal
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
-
-class ReviewTag(BaseModel):
-    model_config = ConfigDict(strict=True, extra="forbid")  # 자동 형 변환과 모르는 필드를 막는다
-    sentiment: Literal["부정", "중립", "긍정"]                # 허용값은 Literal
-    urgency: int = Field(ge=1, le=3)                         # 범위는 Field
-
-try:
-    tag = ReviewTag.model_validate_json(raw)                 # 문자열 → 검증된 객체
-except ValidationError as error:
-    print(error.errors())                                    # 오류마다 loc(위치)·type·msg
-```
-
-```python
-from typing import Literal
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
-
-class ReviewTag(BaseModel):
-    model_config = ConfigDict(strict=True, extra="forbid)
-    sentiment: Literal["부정", "중립", "긍정"]
-    urgency: int = [Field(ge=1, le=3)]
-
-try:
-    tag = ReviewTag.model_validate_json(raw)                 # 문자열 → 검증된 객체
-except ValidationError as error:
-    print(error.errors())                                    # 오류마다 loc(위치)·type·ms
-```
-
-
-## ③ 구현 (50분)
-
-> 코드: `labs/day08/dl_ch07_structured_output.py` · 실행: `uv run python labs/day08/dl_ch07_structured_output.py` (② 부분은 Ollama가 켜져 있어야 한다)
-
-외운 코드로 ✍️ 2개를 쓴다. 15분 막히면 정답을 달라고 하고, 다 쓰면 "리뷰해줘"라고 한다. 실행하기 전에 예상을 적는다.
+아래 🧠 코드를 **보면서** ✍️ 두 곳을 쓰고, 실행해서 출력을 본다. 막히면 바로 물어본다.
 
 | ✍️ | 목적 | 줄 수 |
 |---|---|---|
-| `ReviewTag` 필드 | 감성·불만 유형·긴급도·근거 문장 | 4줄 |
-| `validate_tag` | 답 문자열 → 성공이면 (객체, []), 실패면 (None, 오류 목록) | 4줄 |
-
-**실행 전 예상**
-
-1. ① 고정된 답 5개 중 "구조 통과"는 몇 개이고, 어느 것일까?
-:
-2. ② 프롬프트만 줬을 때 리뷰 3개 중 몇 개가 통과할까? 스키마도 주면?
-:
-3. 스키마를 줬을 때 리뷰 2("박음질이 한 달 만에 풀렸어요")의 불만 유형은 무엇으로 나올까?
-:
-
-<details><summary>정답</summary>
-
-```
-① [정상] 구조 통과 | 부정/배송/3 | 근거가 리뷰에 있음
-   [코드 펜스] 구조 실패 | <root>: json_invalid
-   [허용값·범위 밖] 구조 실패 | sentiment: literal_error, urgency: less_than_equal
-   [문자열 숫자·추가 필드] 구조 실패 | urgency: int_type, note: extra_forbidden
-   [근거 지어냄] 구조 통과 | 부정/배송/3 | 근거가 리뷰에 없음
-② 프롬프트만: 0/3 (모두 sentiment 등 missing + 감성·불만 유형·긴급도·근거 문장 extra_forbidden)
-   스키마도 전달: 3/3 | 리뷰 1 부정/배송/3, 리뷰 2 부정/배송/3, 리뷰 3 긍정/없음/1
-```
-
-1. 2개 (정상, 근거 지어냄). "근거 지어냄"은 구조는 맞지만 근거 문장이 리뷰에 없어 업무 규칙에서 걸린다. 코드 펜스는 JSON 문법부터 틀렸다.
-2. 0개 → 3개. 프롬프트만 주면 모델이 키를 한글(감성, 긴급도…)로 지어서 필드 이름이 하나도 안 맞는다. 스키마를 `response_format`으로 넘기면 키 이름과 허용값이 고정된다. (2번 실행해도 같았다)
-3. **배송** (틀렸다). 박음질이 풀린 것은 품질·내구성인데, 구조 검증은 허용값 안이기만 하면 통과시킨다.
-
-</details>
-
-## ④ 리뷰 (20분)
-
-**문제 찾기:** 아래 코드는 오류 없이 돌아가지만 실무에서 사고가 나는 곳이 3군데 있다. 찾아서 말해 본다.
+| `run_tool` | 모델이 제안한 (도구 이름, 인자 문자열)을 확인하고 실행한다 | 7줄 (가운데 `try` 4줄은 Day07과 같다) |
+| `tool_messages` | 도구 호출마다 실행 결과를 `role="tool"` 메시지로 만든다 | 5줄 |
 
 ```python
-class Tag(BaseModel):
-    sentiment: str
-    urgency: int = Field(ge=1, le=3)
+TOOLS = [{"type": "function", "function": {"name": "count_reviews", "description": "...", "parameters": CountArgs.model_json_schema()}}]
+reply = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS).choices[0].message
 
-
-def parse_tag(raw: str) -> Tag:
+def run_tool(name: str, raw_arguments: str) -> dict:
+    if name not in TOOL_ROUTER:                              # 등록한 도구만 실행한다 (allowlist)
+        return {"ok": False, "error_code": "unknown_tool"}
     try:
-        return Tag.model_validate_json(raw)
-    except Exception:
-        return Tag(sentiment="중립", urgency=1)
+        args = CountArgs.model_validate_json(raw_arguments)  # 모델이 만든 인자를 검증한다
+    except ValidationError:
+        return {"ok": False, "error_code": "invalid_arguments"}
+    return TOOL_ROUTER[name](**args.model_dump())            # 통과한 것만 내 코드가 실행한다
+
+for call in reply.tool_calls:                                # 모델의 제안: 이름, 인자 문자열, 호출 id
+    result = run_tool(call.function.name, call.function.arguments)
+    messages.append({"role": "tool", "tool_call_id": call.id, "content": json.dumps(result, ensure_ascii=False)})
 ```
 
-<details><summary>정답</summary>
+<details><summary>실행 결과 (내 출력과 비교)</summary>
 
-1. `sentiment: str`이라 `"매우 부정"`도 통과한다. `Literal`로 허용값을 정한다.
-2. `strict`와 `extra` 설정이 없어 `"3"`이 3으로 바뀌고, 모르는 필드는 조용히 버려진다. `ConfigDict(strict=True, extra="forbid")`를 넣는다.
-3. 실패하면 가짜 값(중립, 1)을 돌려줘서 실패가 사라진다. `None`이나 오류 목록을 돌려주고, `except Exception`은 `ValidationError`로 좁힌다.
+```
+① 모델 없이: 고정된 도구 호출 4개
+  [정상] {'ok': True, 'product_id': 'product_03', 'sentiment': '부정', 'count': 27, 'total': 64}
+  [없는 도구] {'ok': False, 'error_code': 'unknown_tool'}
+  [인자 틀림] {'ok': False, 'error_code': 'invalid_arguments'}
+  [없는 상품] {'ok': False, 'error_code': 'product_not_found'}
+  tool 메시지: [{'role': 'tool', 'tool_call_id': 'call_1', 'content': '{"ok": true, "product_id": "product_03", "sentiment": "부정", "count": 27, "total": 64}'}]
 
-실제로 `parse_tag('{"sentiment": "매우 부정", "urgency": "3"}')`은 `sentiment='매우 부정' urgency=3`을, `parse_tag("죄송하지만 답할 수 없습니다.")`는 `sentiment='중립' urgency=1`을 돌려준다.
+② Ollama: 도구 없이
+  Q. product_03의 부정 리뷰는 몇 건이야?
+  A. 도구 결과가 제공되지 않았기 때문에, product_03의 부정 리뷰 건수를 확인할 수 없습니다. (뒤 생략. product_99도 같은 답)
+
+② Ollama: 도구와 함께
+  Q. product_03의 부정 리뷰는 몇 건이야?
+    모델의 제안: count_reviews {"product_id":"product_03","sentiment":"부정"}
+    내 코드의 실행 결과: {"ok": true, "product_id": "product_03", "sentiment": "부정", "count": 27, "total": 64}
+  A. product_03의 부정 리뷰는 27건입니다.
+  Q. product_99의 부정 리뷰는 몇 건이야?
+    모델의 제안: count_reviews {"product_id":"product_99","sentiment":"부정"}
+    내 코드의 실행 결과: {"ok": false, "error_code": "product_not_found"}
+  A. product_99은 존재하지 않아서 부정 리뷰 건수를 확인할 수 없습니다.
+  Q. 부정 리뷰에는 어떻게 답글을 달면 좋을까? 한 문장으로.
+  A. (모델의 제안 없이 바로 답한다. 문장은 실행할 때마다 조금 다르다)
+```
+
+2번 실행해 같았다 (답글 문장만 조금 다르다).
+
+- 도구 없이는 모델이 건수를 알 길이 없다. 도구와 함께면 모델이 `count_reviews`를 제안하고, 27이라는 숫자는 내 코드(pandas)가 만든다.
+- product_99는 인자 형식은 통과했지만 함수 안에서 `product_not_found`로 걸렸다. 실패를 그대로 돌려주니 모델도 숫자를 지어내지 않았다.
+- 답글 질문에는 모델이 도구를 제안하지 않았다. 도구를 쓸지 말지는 모델이 정하고, 쓰겠다고 한 것을 실행할지는 내 코드가 정한다.
 
 </details>
 
-**결과 리뷰:** 스키마를 넘기니 3/3이 통과했다. 이제 태깅이 정확하다고 말해도 되는가? 왜?
+## 내 말로 답하기
 
-<details><summary>모범 답</summary>
+🎯 3줄을 다시 읽고, 오늘의 질문에 두세 문장으로 답해서 Claude에게 보낸다. Claude가 빈틈만 짚어 준다.
 
-아니다. 통과한 것은 모양(구조)과 근거 문장 확인뿐이고, 리뷰 2는 품질 불만인데 "배송"으로 태깅됐다. 구조 검증은 "허용값 중 하나인가"만 보고 "맞는 값인가"는 못 본다. 내용이 맞는지는 Day07처럼 정답을 붙인 평가셋으로 따로 재야 한다 (JSON 문법이 맞다 ≠ Schema를 만족한다 ≠ 내용이 사실이다).
+<details><summary>모범 답 (내 답을 쓴 뒤에 연다)</summary>
+
+함수를 실행하는 것은 모델이 아니라 내 코드다. 모델은 도구 이름과 인자를 JSON 문자열로 제안할 뿐이다. 내 코드는 등록한 도구 이름인지, 인자가 `CountArgs`에 맞는지 확인한 뒤에 실행하고, 함수 안에서는 데이터에 실제로 있는 상품인지도 본다. 결과는 성공이든 실패든 그대로 `role="tool"` 메시지로 돌려주고, 건수는 모델이 아니라 pandas가 센다.
 
 </details>
+
+## 더 하고 싶을 때 (선택)
+
+안 해도 된다. 궁금한 것만 고른다.
+
+- **실행 전 예상:** ①의 호출 4개 중 `count_reviews` 함수가 실제로 실행되는 것은 몇 개일까? (답: 2개. 정상과 없는 상품. 없는 도구와 인자 틀림은 함수에 닿기 전에 막힌다)
+- **문제 찾기:** 아래 코드는 오류 없이 돌아가지만 사고가 나는 곳이 3군데 있다.
+
+  ```python
+  def delete_reviews(product_id: str) -> dict:  # 관리자만 쓰는 함수. 도구로 등록한 적 없다
+      return {"ok": True, "deleted": product_id}
+
+  def run_tool(name: str, raw_arguments: str) -> dict:
+      try:
+          function = globals()[name]
+          return function(**json.loads(raw_arguments))
+      except Exception:
+          return {"ok": True, "count": 0}
+  ```
+
+  <details><summary>정답</summary>
+
+  1. `globals()[name]`은 파일 안의 모든 함수를 열어 준다. `run_tool("delete_reviews", '{"product_id": "product_03"}')`가 `{'ok': True, 'deleted': 'product_03'}`을 돌려준다. `TOOL_ROUTER`에 등록한 이름만 실행한다.
+  2. `json.loads`는 문법만 본다. `"sentiment": "나쁨"` 같은 값이 그대로 함수에 들어간다. `CountArgs.model_validate_json`으로 검증한다.
+  3. 실패를 가짜 성공으로 메운다. `"sentiment": "나쁨"`으로 부르면 `{'ok': True, 'count': 0}`이 나와서 모델은 "0건"이라고 답한다. `ok: False`와 `error_code`를 돌려준다.
+
+  </details>
+
+- **📌 강의안에서 읽을 곳:** 1강 §2 "먼저 확인할 실행 경계" 그림, 2강 §2 검증 층 표, 3강 §4 성공과 실패 응답 정책. 강의 코드는 유료 OpenAI Responses API라서 이름이 다르다: `function_call` item은 우리의 `tool_calls`, `call_id`는 `call.id`, `function_call_output`은 `role="tool"` 메시지다.
+- **빈칸 퀴즈** (`docs/CHEATSHEET.md`로 확인): ① 문자열을 검증된 객체로: `tag = ReviewTag.______(raw)` ② 자동 형 변환과 모르는 필드 막기: `ConfigDict(strict=True, extra="______")` ③ 답 문자열 꺼내기: `response.______[0].message.content`

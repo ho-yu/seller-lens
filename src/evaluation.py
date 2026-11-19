@@ -1,8 +1,8 @@
-"""분류 평가 함수. Day07 실습(`labs/day07/`)에서 직접 쓴 `confusion_counts`를 옮겨 왔다."""
+"""분류 평가 함수. Day06 실습(`labs/day06/`)에서 직접 쓴 `confusion_counts`를 옮겨 왔다."""
 
 
 def confusion_counts(y_true: list[int], y_pred: list[int]) -> tuple[int, int, int]:
-    """부정(1)을 기준으로 (tp, fp, fn)을 센다 (Day07).
+    """부정(1)을 기준으로 (tp, fp, fn)을 센다 (Day06).
 
     tp: 정답 1, 예측 1 / fp: 정답 0, 예측 1 / fn: 정답 1, 예측 0
     """

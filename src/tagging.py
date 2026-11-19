@@ -1,4 +1,4 @@
-"""F2 리뷰 태깅의 출력 계약과 검증 함수. Day08 실습(`labs/day08/`)에서 직접 쓴 것을 옮겨 왔다."""
+"""F2 리뷰 태깅의 출력 계약과 검증 함수. Day07 실습(`labs/day07/`)에서 직접 쓴 것을 옮겨 왔다."""
 
 from typing import Literal
 
@@ -10,7 +10,7 @@ ComplaintType = Literal[
 
 
 class ReviewTag(BaseModel):
-    """리뷰 태깅 결과의 출력 계약. 정의 안 한 필드(extra)와 자동 형 변환(strict)은 막는다 (Day08)."""
+    """리뷰 태깅 결과의 출력 계약. 정의 안 한 필드(extra)와 자동 형 변환(strict)은 막는다 (Day07)."""
 
     model_config = ConfigDict(strict=True, extra="forbid")
     sentiment: Literal["부정", "중립", "긍정"]
@@ -25,7 +25,7 @@ def short_errors(error: ValidationError) -> list[str]:
 
 
 def validate_tag(raw: str) -> tuple[ReviewTag | None, list[str]]:
-    """답 문자열을 ReviewTag로 검증한다. 성공하면 (객체, []), 실패하면 (None, 오류 목록) (Day08)."""
+    """답 문자열을 ReviewTag로 검증한다. 성공하면 (객체, []), 실패하면 (None, 오류 목록) (Day07)."""
     try:
         tag = ReviewTag.model_validate_json(raw)  # 문자열 → 검증된 객체
     except ValidationError as error:
@@ -34,5 +34,5 @@ def validate_tag(raw: str) -> tuple[ReviewTag | None, list[str]]:
 
 
 def evidence_in_review(tag: ReviewTag, review: str) -> bool:
-    """업무 규칙: 근거 문장이 리뷰 원문에 실제로 있는가. 구조 검증으로는 못 잡는다 (Day08)."""
+    """업무 규칙: 근거 문장이 리뷰 원문에 실제로 있는가. 구조 검증으로는 못 잡는다 (Day07)."""
     return tag.evidence.strip() in review

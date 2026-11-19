@@ -1,4 +1,4 @@
-"""Day08 · 딥러닝 실전 7장 — Structured Output과 Pydantic 검증 (F2 리뷰 태깅).
+"""Day07 · 딥러닝 실전 7장 — Structured Output과 Pydantic 검증 (F2 리뷰 태깅).
 
 LLM의 답 문자열을 ReviewTag 모양으로 검증한다. 먼저 고정된 답 5개로 어떤 답이 왜 실패하는지 보고,
 Ollama가 켜져 있으면 리뷰 3개를 "프롬프트만" / "스키마도 전달" 두 방식으로 물어 비교한다.
@@ -6,7 +6,7 @@ Ollama가 켜져 있으면 리뷰 3개를 "프롬프트만" / "스키마도 전�
     ReviewTag      감성·불만 유형·긴급도·근거 문장의 출력 계약          ✍️
     validate_tag   답 문자열 → (ReviewTag 또는 None, 오류 목록)          ✍️
 
-실행 (프로젝트 루트에서): uv run python labs/day08/dl_ch07_structured_output.py
+실행 (프로젝트 루트에서): uv run python labs/day07/dl_ch07_structured_output.py
 """
 
 from typing import Literal

@@ -1,4 +1,4 @@
-"""LLM 호출 함수 모음. Day05·Day07 실습(`labs/`)에서 직접 쓴 함수를 옮겨 왔다."""
+"""LLM 호출 함수 모음. Day05·Day06 실습(`labs/`)에서 직접 쓴 함수를 옮겨 왔다."""
 
 from openai import OpenAI
 
@@ -12,7 +12,7 @@ def build_messages(system_prompt: str, review: str) -> list[dict]:
 
 
 def build_fewshot_messages(system_prompt: str, examples: list[tuple[str, str]], review: str) -> list[dict]:
-    """System Prompt, 예시 목록, 리뷰를 messages 목록으로 만든다 (Day07).
+    """System Prompt, 예시 목록, 리뷰를 messages 목록으로 만든다 (Day06).
 
     examples: [(예시 리뷰, 정답), ...]. 예시마다 user → assistant 쌍이 되고, 비어 있으면 예시 없는(zero-shot) messages가 된다.
     """

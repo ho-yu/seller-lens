@@ -1,7 +1,7 @@
 # 핵심 코드 모음
 
 > 실무에서 매번 쓰는 코드만 강마다 쌓는다. 가리고 다시 쓸 수 있으면 된다.
-> 강을 시작할 때 여기서 빈칸 퀴즈 3문항이 나온다 (지난 강 2개, 더 예전 것 1개). 마무리 때 Claude가 그날 🧠을 아래에 붙인다.
+> 마무리 때 Claude가 그날 🧠을 아래에 붙인다. 다음 강 TASKS.md의 "더 하고 싶을 때"에 여기서 고른 빈칸 퀴즈가 나온다 (선택).
 
 ## Day05 · LLM API 호출 (1과목 5장)
 
@@ -17,7 +17,7 @@ answer = response.choices[0].message.content.strip()  # 답 문자열만 꺼낸�
 
 - `temperature=0`은 같은 입력에 같은 답을 내게 한다. 분류와 평가에 쓴다.
 
-## Day07 · Few-shot과 평가 (1과목 6장)
+## Day06 · Few-shot과 평가 (1과목 6장)
 
 ```python
 messages += [{"role": "user", "content": example_review}, {"role": "assistant", "content": answer}]  # 예시 한 쌍
@@ -29,7 +29,7 @@ precision = tp / (tp + fp)  # 정밀도: 부정이라 한 것 중 진짜 비율
 - 예시로 보여 준 리뷰는 평가셋에 넣지 않는다.
 - 정확도는 "전부 한쪽으로 답했을 때"의 기준선과 비교해서 읽는다.
 
-## Day08 · Structured Output과 Pydantic 검증 (1과목 7장)
+## Day07 · Structured Output과 Pydantic 검증 (1과목 7장)
 
 ```python
 class ReviewTag(BaseModel):

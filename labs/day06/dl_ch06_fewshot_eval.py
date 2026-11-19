@@ -1,4 +1,4 @@
-"""Day07 · 딥러닝 실전 6장 — Few-shot과 정확도 평가.
+"""Day06 · 딥러닝 실전 6장 — Few-shot과 정확도 평가.
 
 평점 라벨(1~2점 = 부정, 4~5점 = 긍정)로 LLM 감성 분류를 채점한다. 평가셋은 헷갈리기 쉬운 2점 30건 + 4점 30건.
 예시 없이(zero-shot) 물을 때와 예시 4개를 보여 줄 때(few-shot)를 같은 평가셋으로 비교한다.
@@ -6,7 +6,7 @@
     build_fewshot_messages  System Prompt + 예시 + 리뷰 → messages 목록   ✍️
     confusion_counts        정답·예측 목록 → (tp, fp, fn)                 ✍️
 
-실행 (프로젝트 루트에서, Ollama가 켜져 있어야 한다): uv run python labs/day07/dl_ch06_fewshot_eval.py
+실행 (프로젝트 루트에서, Ollama가 켜져 있어야 한다): uv run python labs/day06/dl_ch06_fewshot_eval.py
 """
 
 from pathlib import Path
