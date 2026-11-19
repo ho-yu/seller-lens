@@ -32,7 +32,7 @@
 ## 🔧 바뀐 것
 
 - `labs/day08/dl_ch07_structured_output.py`: `ReviewTag` 필드 4개와 `validate_tag`(✍️), 근거 확인·스키마 전달 호출·고정 답 5개·Ollama 비교 demo
-- `labs/day08/TASKS.md`: 훑기 → 암기 → 구현 → 리뷰 형식의 첫 TASKS.md (퀴즈, 핵심 개념, 핵심 코드, 실행 전 예상, 문제 찾기)
+- `labs/day08/TASKS.md`: 훑기 → 암기 → 구현 → 리뷰 형식의 첫 `TASKS.md` (퀴즈, 핵심 개념, 핵심 코드, 실행 전 예상, 문제 찾기)
 - `src/tagging.py`: 새 파일. `ReviewTag`, `validate_tag`, `short_errors`, `evidence_in_review` 복사 (실습 파일은 그대로)
 - `docs/CHEATSHEET.md`: 핵심 코드 모음 신설. Day05·Day07 코드와 Day08 🧠 추가
 - `CLAUDE.md`, `AGENTS.md`: 학습 순서를 훑기 → 암기 → 구현 → 리뷰로 바꾸고 한 강을 2시간 안팎으로 정함
