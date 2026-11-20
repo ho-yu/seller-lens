@@ -1,24 +1,24 @@
 # sellerlens 커리큘럼
 
 > KANT 강의 4과목을 순서대로 듣고, 배운 것 중 **기능에 꼭 필요하고 실무에서 자주 쓰는 것**만 sellerlens에 직접 구현한다.
-> 등급: **A** 직접 코딩 + `src/` 반영 · **B** Claude 코드를 실행해 보고 질문에 답하기 · **C** 강의만. 작업 규칙은 [`CLAUDE.md`](../CLAUDE.md). (개정: 2026-10-27)
+> 등급: **A** 직접 코딩 + `src/` 반영 · **B** Claude 코드를 실행해 보고 질문에 답하기 · **C** 강의만. 작업 규칙은 [`CLAUDE.md`](../CLAUDE.md). (개정: 2026-10-27, 2026-11-20 소싱 판단용으로 기능 변경 — [`PLAN.md`](PLAN.md))
 
 ## 필수 핵심 개념 12개 (A 등급)
 
 | # | 개념 | 기능 | 강의 |
 |---|---|---|---|
 | 1 | pandas로 읽기·거르기·집계 | F1, F5 | 2과목 4장 |
-| 2 | LLM API 호출, System Prompt, temperature | F2, F4 | 1과목 5장 |
+| 2 | LLM API 호출, System Prompt, temperature | F2 | 1과목 5장 |
 | 3 | Few-shot과 정확도 평가 | F2 | 1과목 6장 |
-| 4 | JSON 출력과 Pydantic 검증 | F2, F3 | 1과목 7장 |
-| 5 | Tool Calling | F5, F9 | 1과목 8장 |
+| 4 | JSON 출력과 Pydantic 검증 | F2 | 1과목 7장 |
+| 5 | Tool Calling | F5, F9, F11 | 1과목 8장 |
 | 6 | timeout·retry | 전체 | 1과목 10장 |
 | 7 | FastAPI 엔드포인트와 요청·응답 스키마 | 전체 | 2과목 5~7장 |
 | 8 | PromptTemplate과 LCEL 체인 | 전체 | 3과목 2~3·5장 |
 | 9 | 임베딩과 코사인 유사도 | F6 | 4과목 4장 |
 | 10 | 벡터DB 검색과 메타데이터 필터 | F6 | 4과목 5장 |
-| 11 | 근거를 붙인 답변과 답변 보류 | F7 | 4과목 6장 |
-| 12 | 평가셋으로 개선 전후 비교 | 전체 | 4과목 8장 |
+| 11 | 근거를 붙인 요약 (근거 없으면 쓰지 않기) | F5 | 4과목 6장 |
+| 12 | 평가셋으로 개선 전후 비교 | 전체, F12 | 4과목 8장 |
 
 ## 사전 준비 ✅
 
@@ -26,7 +26,7 @@
 
 ## 1과목. 딥러닝 실전 & 프롬프트
 
-**끝나면:** 리뷰 파일을 넣으면 태깅, 답글 초안, 리포트가 나오는 CLI. 1~4장은 이해만 하고 직접 코딩은 5장부터.
+**끝나면:** 상품 리뷰 엑셀을 넣으면 태깅과 상품 리뷰 리포트 v0이 나오는 CLI. 1~4장은 이해만 하고 직접 코딩은 5장부터.
 
 | 장 | 주제 | 등급 | 남길 것 / 할 것 |
 |---|---|---|---|
@@ -34,12 +34,12 @@
 | 2 | 경사하강법, 옵티마이저 | C | "loss가 줄어드는 방향으로 조금씩 고친다" |
 | 3 | Attention | C | 강의만 |
 | 4 | Base/SFT/Instruct | C | instruct 모델을 쓴다. Ollama 모델 1개 고르기 |
-| 5 | LLM API, System Prompt | **A** | 리뷰 1개 → 감성 분류. F4 답글 초안 v0 |
+| 5 | LLM API, System Prompt | **A** | 리뷰 1개 → 감성 분류 (Day05 답글 프롬프트 실습은 F4 제외로 기록만 남김) |
 | 6 | Few-shot, 평가 | **A** | 평점 라벨로 정확도 측정 |
-| 7 | JSON Schema, Pydantic | **A** | F2 태깅(감성·불만 유형·긴급도·근거 문장), F3 |
+| 7 | JSON Schema, Pydantic | **A** | F2 태깅 스키마와 검증. 다음 태깅 작업 때 긴급도를 빼고 좋은 점·나쁜 점 유형으로 바꾼다 |
 | 8 | Tool Calling | **A** | 집계 함수를 도구로. F5 리포트 v0 |
 | 9 | 멀티모달 | C | 건너뛴다 |
-| 10 | Retry, 캐싱, CLI 통합 | **A** | timeout·retry. CLI 뼈대는 Claude. F8 |
+| 10 | Retry, 캐싱, CLI 통합 | **A** | timeout·retry. CLI 뼈대는 Claude (엑셀 → 리포트) |
 
 ## 2과목. 데이터 수집 & API 서버
 
@@ -53,7 +53,7 @@
 | 4 | 정제, 본문/메타데이터 분리 | **A** | 리뷰 정제 파이프라인 (F1 완성) |
 | 5 | FastAPI 구조 | **A** | `/health` |
 | 6 | Pydantic 스키마, 등록/조회 API | **A** | `POST /reviews/upload`, `GET /reviews` |
-| 7 | Query API, LLM 연동 | **A** | `/reviews/{id}/tag` 등 1과목 기능 옮기기 |
+| 7 | Query API, LLM 연동 | **A** | `/reviews/{id}/tag`, `/products/{id}/report` 등 1과목 기능 옮기기. F11 금액 계산 |
 | 8 | 비동기, middleware | B | 일괄 태깅 (코드는 Claude) |
 
 ## 3과목. LangChain
@@ -63,9 +63,9 @@
 | 장 | 주제 | 등급 | 남길 것 / 할 것 |
 |---|---|---|---|
 | 1 | 구조 비교 | C | 강의만 |
-| 2 | PromptTemplate, Output Parser | **A** | 태깅·답글 프롬프트를 템플릿으로 |
+| 2 | PromptTemplate, Output Parser | **A** | 태깅·요약 프롬프트를 템플릿으로 |
 | 3 | LCEL, invoke/batch/stream | **A** | 태깅 체인 |
-| 4 | RunnableParallel | B | 태깅·답글 병렬 |
+| 4 | RunnableParallel | B | 좋은 점·나쁜 점 요약 병렬 |
 | 5 | 구조화 출력, retry | **A** | `with_structured_output` |
 | 6 | Document, Retriever | B | 근거 리뷰 찾기 v0 |
 | 7 | 대화 기록 | B | 여러 턴 질의 |
@@ -75,16 +75,16 @@
 
 ## 4과목. RAG
 
-**끝나면:** 리뷰·정책 근거를 출처와 함께 찾고, CS 답변 초안을 받는다.
+**끝나면:** 리포트 항목마다 근거 리뷰가 붙고, 조건으로 근거를 찾고, 상품을 비교한다. 내 분류기를 LLM 태깅과 비교한다.
 
 | 장 | 주제 | 등급 | 남길 것 / 할 것 |
 |---|---|---|---|
 | 1 | RAG 필요성 | B | 질문 유형별로 RAG / 전체 입력 / 집계 도구 고르기 |
-| 2 | 문서 로딩, Metadata | B | metadata 확정 |
-| 3 | 청킹 | B | 정책·FAQ 문서 청킹 |
-| 4 | 임베딩, 코사인 유사도 | **A** | 리뷰 검색 기준선 |
+| 2 | 문서 로딩, Metadata | B | metadata 확정 (상품, 옵션, 별점, 작성일) |
+| 3 | 청킹 | C | 리뷰는 짧아 거의 필요 없다. 긴 리뷰만 나누면 되는지 확인 |
+| 4 | 임베딩, 코사인 유사도 | **A** | 리뷰 검색 기준선. 이어서 F12 내 분류기 (임베딩 + 로지스틱 회귀) |
 | 5 | Qdrant, 필터 | **A** | F6 리뷰 근거 검색 |
-| 6 | Citation, 답변 보류 | **A** | F7 CS 답변 초안 |
+| 6 | Citation, 근거 없으면 쓰지 않기 | **A** | F5 리포트 항목마다 근거 리뷰 인용 |
 | 7 | Hybrid, Re-ranking | B | 개선 전후 비교 |
-| 8 | 평가 (Hit@k) | **A** | 셀러 질문 20개 평가셋 |
+| 8 | 평가 (Hit@k) | **A** | 검색 질문 20개 평가셋. F12 분류기와 LLM 태깅 비교 |
 | 9 | Parent-Child, Agentic, GraphRAG | C | Agentic 분기(F9)만 B로 |
