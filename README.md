@@ -11,7 +11,7 @@ KANT 강의 4과목을 순서대로 학습하면서, 배운 것을 바로 이 �
 ![LLM](https://img.shields.io/badge/LLM-Ollama%20(local)-000000?logo=ollama&logoColor=white)
 ![Status](https://img.shields.io/badge/status-Day07%20완료-lightgrey)
 
-[기획서](docs/PLAN.md) · [로드맵](docs/ROADMAP.md) · [커리큘럼](docs/CURRICULUM.md) · [기능 진행 현황](docs/FEATURES.md) · [학습 일지](docs/days/) · [코딩 컨벤션](docs/CONVENTIONS.md)
+[현황](docs/STATUS.md) · [기획서](docs/PLAN.md) · [설계](docs/DESIGN.md) · [로드맵](docs/ROADMAP.md) · [커리큘럼](docs/CURRICULUM.md) · [기능 진행 현황](docs/FEATURES.md) · [학습 일지](docs/days/) · [코딩 컨벤션](docs/CONVENTIONS.md)
 
 </div>
 
@@ -78,7 +78,9 @@ sellerlens/
 ├─ labs/dayNN/           Day별 실습 — 배우는 곳 (그날 이후 고정)
 ├─ src/                  서비스 코드 — 쌓아 가는 곳
 ├─ docs/
-│  ├─ PLAN.md            기획서 (문제 정의 · 목표 · 지표 · 리스크)
+│  ├─ STATUS.md          현황 (기획 · 설계 · 진행 사항 한 장)
+│  ├─ PLAN.md            기획서 (목적 · 기능 · 완료 기준 · 리스크)
+│  ├─ DESIGN.md          설계 (데이터 흐름 · 태깅 스키마 · 모듈 구조)
 │  ├─ ROADMAP.md         기능 목록 · 추후 진행
 │  ├─ CURRICULUM.md      과목·장별 학습/개발 계획
 │  ├─ FEATURES.md        기능별 진행 현황
